@@ -3,11 +3,13 @@ package com.example.tasktracker.service;
 import com.example.tasktracker.model.Status;
 import com.example.tasktracker.model.Task;
 import com.example.tasktracker.repository.TaskRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +30,14 @@ public class TaskService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
     }
 
-
-
-    public List<Task> findByStatus(Status status) {
-        return repository.findByStatus(status);
+    public List<Task> sort(String field, String direction, Status status) {
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction)
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+        Sort sort = Sort.by(sortDirection, field);
+        if(status == null) {
+            return repository.findAll(sort);
+        } else return repository.sort(status, sort);
     }
 
     public void addTask(Task task) {
@@ -49,6 +55,18 @@ public class TaskService {
             oldTask.setDescription(newTask.getDescription());
 
             repository.save(oldTask);
+        }
+    }
+
+    public void updateAllTasks(Task newTask) {
+        List<Task> tasks = getAllTasks();
+        for(Task task : tasks) {
+            task.setTitle(newTask.getTitle());
+            task.setStatus(newTask.getStatus());
+            task.setDeadline(newTask.getDeadline());
+            task.setDescription(newTask.getDescription());
+
+            repository.save(task);
         }
     }
 
