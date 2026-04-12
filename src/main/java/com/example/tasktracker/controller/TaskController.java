@@ -6,7 +6,7 @@ import com.example.tasktracker.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -23,11 +23,12 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public List<Task> getTasks(
+            @RequestParam(required = false) String title,
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
-        return service.sort(sortBy, direction, status);
+        return service.sort(sortBy, direction, status, title);
     }
 
     @GetMapping("/tasks/{id}")
@@ -35,27 +36,31 @@ public class TaskController {
         return service.getTask(id);
     }
 
-    @PostMapping("POST /tasks")
+
+
+    @PostMapping("/tasks")
     public void addTask(@RequestBody @Valid Task task) {
         service.addTask(task);
     }
 
-    @PutMapping("UPDATE /tasks/{id}")
+
+    @PutMapping("/tasks/{id}")
     public void updateTask(@PathVariable Long id,@RequestBody @Valid Task newTask) {
         service.updateTask(id, newTask);
     }
 
-    @PutMapping("UPDATE /tasks")
+    @PutMapping("/tasks")
     public void updateAllTasks(@RequestBody @Valid Task newTask) {
         service.updateAllTasks(newTask);
     }
 
-    @DeleteMapping("DELETE /tasks/{id}")
+
+    @DeleteMapping("/tasks/{id}")
     public void deleteTaskById(@PathVariable Long id) {
         service.deleteTaskById(id);
     }
 
-    @DeleteMapping("DELETE /tasks")
+    @DeleteMapping("/tasks")
     public void deleteAllTasks() {
         service.deleteAllTasks();
     }

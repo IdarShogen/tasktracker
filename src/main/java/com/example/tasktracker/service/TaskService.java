@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,14 +30,21 @@ public class TaskService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
     }
 
-    public List<Task> sort(String field, String direction, Status status) {
+    public List<Task> sort(String field, String direction, Status status, String title) {
         Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction)
                 ? Sort.Direction.DESC
                 : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, field);
-        if(status == null) {
+        if(status != null && title == null) {
+            return repository.findByStatus(status, sort);
+        } else if(status == null && title != null) {
+            return repository.findByTitle(title, sort);
+        } else if(status != null && title != null) {
+            return null;
+        } else {
             return repository.findAll(sort);
-        } else return repository.sort(status, sort);
+        }
+
     }
 
     public void addTask(Task task) {

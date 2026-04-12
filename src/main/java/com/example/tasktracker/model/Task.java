@@ -2,10 +2,14 @@ package com.example.tasktracker.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.time.LocalDate;
 
+@Setter
+@Getter
 @Entity
 public class Task {
     @Id
@@ -38,43 +42,4 @@ public class Task {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public LocalDate getDeadline() {
-        return deadline;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setDeadline(LocalDate deadline) {
-        this.deadline = deadline;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
