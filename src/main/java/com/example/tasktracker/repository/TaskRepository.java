@@ -15,5 +15,6 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatus(Status status, Sort sort);
     List<Task> findByTitle(String title, Sort sort);
+    List<Task> findByStatusAndTitle(Status status, String title, Sort sort);
 
 }

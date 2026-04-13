@@ -1,11 +1,13 @@
 package com.example.tasktracker.service;
 
+import com.example.tasktracker.model.SortField;
 import com.example.tasktracker.model.Status;
 import com.example.tasktracker.model.Task;
 import com.example.tasktracker.repository.TaskRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 
@@ -30,21 +32,32 @@ public class TaskService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
     }
 
-    public List<Task> sort(String field, String direction, Status status, String title) {
-        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction)
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-        Sort sort = Sort.by(sortDirection, field);
-        if(status != null && title == null) {
+    public Sort initSort(String field, String direction) {
+        try {
+            SortField sortField = SortField.valueOf(field.toUpperCase());
+            Sort.Direction sortDirection;
+            if(direction != null && direction.equalsIgnoreCase("desc")) sortDirection = Sort.Direction.DESC;
+            else if(direction != null && direction.equalsIgnoreCase("asc")) sortDirection = Sort.Direction.ASC;
+            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid direction");
+
+            return Sort.by(sortDirection, String.valueOf(sortField).toLowerCase());
+
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort field");
+        }
+    }
+
+    public List<Task> getFilteredAndSortedTasks(String field, String direction, String title, Status status) {
+        Sort sort = initSort(field, direction);
+        if (status != null && title == null) {
             return repository.findByStatus(status, sort);
-        } else if(status == null && title != null) {
+        } else if (status == null && title != null) {
             return repository.findByTitle(title, sort);
-        } else if(status != null && title != null) {
-            return null;
+        } else if (status != null) {
+            return repository.findByStatusAndTitle(status, title, sort);
         } else {
             return repository.findAll(sort);
         }
-
     }
 
     public void addTask(Task task) {
@@ -52,17 +65,14 @@ public class TaskService {
     }
 
     public void updateTask(Long id, Task newTask) {
-        Optional<Task> optionalTask = repository.findById(id);
+        Task oldTask = repository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+        oldTask.setTitle(newTask.getTitle());
+        oldTask.setStatus(newTask.getStatus());
+        oldTask.setDeadline(newTask.getDeadline());
+        oldTask.setDescription(newTask.getDescription());
+        repository.save(oldTask);
 
-        if(optionalTask.isPresent()) {
-            Task oldTask = optionalTask.get();
-            oldTask.setTitle(newTask.getTitle());
-            oldTask.setStatus(newTask.getStatus());
-            oldTask.setDeadline(newTask.getDeadline());
-            oldTask.setDescription(newTask.getDescription());
-
-            repository.save(oldTask);
-        }
     }
 
     public void updateAllTasks(Task newTask) {
@@ -78,6 +88,8 @@ public class TaskService {
     }
 
     public void deleteTaskById(Long id) {
+        repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
         repository.deleteById(id);
     }
 

@@ -28,7 +28,7 @@ public class TaskController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
-        return service.sort(sortBy, direction, status, title);
+        return service.getFilteredAndSortedTasks(sortBy, direction, title, status);
     }
 
     @GetMapping("/tasks/{id}")
