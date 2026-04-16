@@ -67,7 +67,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 
 Для запуска приложения используйте:
 
-`mvn-spring-boot:run`
+`mvn spring-boot:run`
 
 ## API endpoints
 
