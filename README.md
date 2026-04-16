@@ -29,11 +29,11 @@ Task Tracker Backend - это backend-приложение для управле
 ## Структура задачи
 
 Каждая задача содержит:
-- `id` — идентификатор
-- `title` — название
-- `description` — описание
-- `deadline` — крайний срок выполнения
-- `status` — статус задачи
+- `id` - идентификатор
+- `title` - название
+- `description` - описание
+- `deadline` - крайний срок выполнения
+- `status` - статус задачи
 
 ## Планируется добавить
 
@@ -71,17 +71,17 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 
 ## API endpoints
 
-- `GET /tasks` — получить список задач
-- `GET /tasks/{id}` — получить задачу по ID
-- `POST /tasks` — создать новую задачу
-- `PUT /tasks/{id}` — обновить задачу по ID
-- `PUT /tasks` — обновить все задачи
-- `DELETE /tasks/{id}` — удалить задачу по ID
-- `DELETE /tasks` — удалить все задачи
+- `GET /tasks` - получить список задач
+- `GET /tasks/{id}` - получить задачу по ID
+- `POST /tasks` - создать новую задачу
+- `PUT /tasks/{id}` - обновить задачу по ID
+- `PUT /tasks` - обновить все задачи
+- `DELETE /tasks/{id}` - удалить задачу по ID
+- `DELETE /tasks` - удалить все задачи
 
 ### Query parameters for GET /tasks
 
-- `status` — фильтрация по статусу
-- `title` — фильтрация по названию
-- `sortBy` — поле для сортировки
-- `direction` — направление сортировки (`asc` / `desc`)
+- `status` - фильтрация по статусу
+- `title` - фильтрация по названию
+- `sortBy` - поле для сортировки
+- `direction` - направление сортировки (`asc` / `desc`)
